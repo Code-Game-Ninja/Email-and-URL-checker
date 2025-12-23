@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Cybersecurity Risk AI</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shield-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <h1>Risk AI</h1>
+      </div>
+    </header>
+
+    <div class="main-content">
+      <div class="input-group">
+        <textarea id="input" placeholder="Paste URL or text to analyze..."></textarea>
+      </div>
+      
+      <button id="analyzeBtn">Analyze Risk</button>
+      
+      <div id="loading" class="hidden">
+        <div class="spinner"></div>
+        <span>Analyzing...</span>
+      </div>
+
+      <div id="result" class="hidden">
+        <div id="riskBanner" class="banner">
+          <div id="riskIcon"></div>
+          <div class="banner-text">
+            <h3 id="warningMessage"></h3>
+            <p>Risk Level: <span id="riskLevel"></span></p>
+          </div>
+        </div>
+
+        <div class="details">
+          <div id="urlSection" class="hidden">
+            <h4>URL Analysis</h4>
+            <p id="urlSummary"></p>
+          </div>
+          
+          <div id="textSection" class="hidden">
+            <h4>Content Analysis</h4>
+            <div class="stats-row">
+              <div>
+                <span class="label">Fraud Prob.</span>
+                <span id="fraudProb" class="value"></span>
+              </div>
+              <div>
+                <span class="label">Category</span>
+                <span id="category" class="value"></span>
+              </div>
+            </div>
+            <div id="signals" class="tags"></div>
+          </div>
+
+          <div id="emailSection" class="hidden">
+             <h4>Email Analysis</h4>
+             <div id="emailList"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div id="emailCheckSection" class="hidden">
+        <div class="divider"></div>
+        <h4>Check Sender Email</h4>
+        <p class="small-text">No email found. Check sender manually:</p>
+        <div class="row">
+            <input type="email" id="manualEmail" placeholder="sender@example.com">
+            <button id="checkEmailBtn">Check</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

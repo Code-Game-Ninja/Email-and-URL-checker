@@ -67,9 +67,11 @@ async function analyze(content) {
   const loading = document.getElementById('loading');
   const result = document.getElementById('result');
   const analyzeBtn = document.getElementById('analyzeBtn');
+  const errorDiv = document.getElementById('errorMessage');
 
   loading.classList.remove('hidden');
   result.classList.add('hidden');
+  errorDiv.classList.add('hidden');
   analyzeBtn.disabled = true;
 
   try {
@@ -87,7 +89,14 @@ async function analyze(content) {
 
   } catch (error) {
     console.error('Analysis failed:', error);
-    alert('Analysis failed. Please check your internet connection or try again later.');
+    const errorDiv = document.getElementById('errorMessage');
+    errorDiv.textContent = 'Analysis failed. Ensure the server is deployed and running.';
+    errorDiv.classList.remove('hidden');
+    
+    // Auto-hide after 5 seconds
+    setTimeout(() => {
+        errorDiv.classList.add('hidden');
+    }, 5000);
   } finally {
     loading.classList.add('hidden');
     analyzeBtn.disabled = false;
@@ -96,6 +105,9 @@ async function analyze(content) {
 
 function displayResult(data) {
   const result = document.getElementById('result');
+  const errorDiv = document.getElementById('errorMessage');
+  errorDiv.classList.add('hidden'); // Hide error if successful
+  
   const riskBanner = document.getElementById('riskBanner');
   const warningMessage = document.getElementById('warningMessage');
   const riskLevel = document.getElementById('riskLevel');

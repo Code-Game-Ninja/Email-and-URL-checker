@@ -298,3 +298,15 @@ h4 {
     border-color: #bbf7d0;
     color: #166534;
 }
+
+.error-message {
+  margin-top: 16px;
+  padding: 12px;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.4;
+  text-align: center;
+}

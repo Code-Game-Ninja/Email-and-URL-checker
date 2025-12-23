@@ -19,8 +19,7 @@ Since your project is already on GitHub, deploying to Vercel is very easy.
 
 3.  **Configure Project:**
     *   **Framework Preset:** It should automatically detect **Next.js**.
-    *   **Root Directory:** Select `cybersecurity-risk-ai` (since your Next.js app is inside this folder, not at the root of the repo).
-        *   Click "Edit" next to Root Directory and select the `cybersecurity-risk-ai` folder.
+    *   **Root Directory:** Leave it as `./` (default).
 
 4.  **Environment Variables:**
     Expand the **"Environment Variables"** section and add the following keys (copy values from your local `.env.local` file):

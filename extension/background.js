@@ -16,7 +16,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     // Instead, we'll open a new tab to the local app for now.
     
     // const baseUrl = 'http://localhost:3000'; // Localhost for development
-    const baseUrl = 'https://cybersecurity-risk-ai.vercel.app'; // Production URL (Replace with actual deployed URL)
+    const baseUrl = 'https://email-and-url-checker.vercel.app'; // Production URL
     const url = `${baseUrl}?analyze=${encodeURIComponent(content)}`;
     chrome.tabs.create({ url });
   }

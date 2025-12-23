@@ -1,5 +1,5 @@
 // const API_URL = 'http://localhost:3000/api/analyze'; // Localhost for development
-const API_URL = 'https://email-and-url-checker.vercel.app'; // Production URL (Replace with actual deployed URL)
+const API_URL = 'https://email-and-url-checker.vercel.app/api/analyze'; // Production URL
 
 document.addEventListener('DOMContentLoaded', async () => {
   const input = document.getElementById('input');

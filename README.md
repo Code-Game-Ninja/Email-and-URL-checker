@@ -1,30 +1,40 @@
-# Cybersecurity Risk Analysis AI
+# Cybersecurity Risk Analysis AI & Browser Extension
 
-A Next.js application that helps users detect malicious URLs and analyze text for phishing, scam, and fraud attempts using VirusTotal and AI-powered text analysis. **Now with AI learning from user feedback!**
+A comprehensive cybersecurity tool that helps users detect malicious URLs, analyze text for phishing/scams, and identify adult/gambling content using VirusTotal and AI-powered analysis. Includes a web application and a Chrome extension.
+
+**Live Demo:** [https://email-and-url-checker.vercel.app](https://email-and-url-checker.vercel.app)
 
 ## Features
 
-- **URL Risk Interpretation**: Checks URLs against VirusTotal's database to identify malicious or suspicious sites.
-- **Fraud Text Analysis**: Uses AI to analyze messages (SMS, email, chat) for signs of urgency, fake authority, and other fraud signals.
-- **Risk Scoring**: Provides a clear "SAFE", "CAUTION", or "DANGEROUS" assessment based on strict scoring rules.
-- **User Feedback System**: Submit feedback on analysis accuracy to help the AI learn and improve.
-- **Historical Learning**: The AI learns from previous user feedback stored in MongoDB.
-- **User-Friendly UI**: Simple interface with toast notifications and feedback buttons.
+- **🛡️ URL Risk Analysis**: Checks URLs against VirusTotal's database to identify malicious sites.
+- **🧠 AI Content Analysis**: Uses advanced LLMs to analyze text messages, emails, and chats for fraud signals (urgency, fake authority, etc.).
+- **🔞 Content Filtering**: Automatically flags adult and gambling content as "Caution".
+- **📧 Email Reputation Check**: Extracts emails from text and checks their reputation. Allows manual email lookup if none are found.
+- **🧩 Browser Extension**: Analyze any text or link directly from your browser with a right-click context menu or popup.
+- **🔄 Feedback Loop**: Users can provide feedback ("Safe" vs "Threat") to help the system learn and improve.
+- **📊 Risk Scoring**: Clear "SAFE", "CAUTION", or "DANGEROUS" assessment.
+
+## Project Structure
+
+- **Web App**: Next.js 14 application (App Router) hosted on Vercel.
+- **Extension**: Chrome extension that communicates with the web app API.
+- **Database**: MongoDB for storing user feedback and threat intelligence.
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 18+ installed
-- MongoDB installed and running (local or cloud)
+- Node.js 18+
+- MongoDB (Local or Atlas)
 - VirusTotal API Key
 - OpenRouter API Key
 
-### Installation
+### Installation (Web App)
 
-1. Navigate to the project directory:
+1. Clone the repository:
    ```bash
-   cd cybersecurity-risk-ai
+   git clone https://github.com/Code-Game-Ninja/Email-and-URL-checker.git
+   cd Email-and-URL-checker/cybersecurity-risk-ai
    ```
 
 2. Install dependencies:
@@ -32,78 +42,51 @@ A Next.js application that helps users detect malicious URLs and analyze text fo
    npm install
    ```
 
-3. Set up MongoDB:
-   
-   **Option A: Local MongoDB**
-   - Install MongoDB: https://www.mongodb.com/docs/manual/installation/
-   - Start MongoDB service:
-     ```bash
-     sudo systemctl start mongodb
-     # or on macOS with homebrew:
-     brew services start mongodb-community
-     ```
-   
-   **Option B: MongoDB Atlas (Cloud)**
-   - Create a free account at https://www.mongodb.com/cloud/atlas
-   - Create a cluster and get your connection string
-   - Replace `MONGODB_URI` in `.env.local` with your Atlas connection string
-
-4. Set up environment variables:
-   Create/update `.env.local` file:
+3. Set up environment variables in `.env.local`:
    ```env
    VIRUSTOTAL_API_KEY=your_virustotal_key
    OPENROUTER_API_KEY=your_openrouter_key
    OPENROUTER_MODEL=meta-llama/llama-3.2-3b-instruct:free
-   MONGODB_URI=mongodb://localhost:27017/cybersecurity-risk-ai
+   MONGODB_URI=your_mongodb_connection_string
    ```
 
-5. Run the development server:
+4. Run the development server:
    ```bash
    npm run dev
    ```
 
-6. Open [http://localhost:3000](http://localhost:3000) with your browser.
+### Installation (Browser Extension)
 
-## How It Works
+1. Open Chrome and go to `chrome://extensions/`.
+2. Enable **Developer mode** in the top right corner.
+3. Click **Load unpacked**.
+4. Select the `extension` folder located inside the project directory.
+5. The extension is now installed! You can pin it to your toolbar.
 
-### AI Learning System
+## Deployment
 
-1. **Analysis**: The AI analyzes URLs and messages for threats using VirusTotal and LLM analysis.
-2. **User Feedback**: After each analysis, users can mark it as "Safe" or "Threat".
-3. **Storage**: Feedback is stored in MongoDB with the content, prediction, and actual result.
-4. **Learning**: For future analyses:
-   - If the exact content was seen before, the AI considers the previous feedback heavily
-   - The AI learns from the last 20 feedback entries to improve pattern recognition
-5. **Improvement**: Over time, the AI becomes more accurate by learning from real user corrections.
-
-### Database Schema
-
-**ThreatFeedback Collection:**
-- `content`: URL or message text
-- `contentType`: 'url' or 'message'
-- `userFeedback`: 'safe' or 'threat' (user's correction)
-- `aiPrediction`: 'SAFE', 'CAUTION', or 'DANGEROUS'
-- `fraudProbability`: 0.0 - 1.0
-- `signals`: Array of detected threat signals
-- `createdAt`, `updatedAt`: Timestamps
+The web application is designed to be deployed on Vercel.
+See [VERCEL_DEPLOYMENT.md](./VERCEL_DEPLOYMENT.md) for detailed deployment instructions.
 
 ## Usage
 
-1. **Enter Content**: Paste a URL or message text into the input box.
-2. **Analyze**: Click "Analyze Risk" to get a comprehensive report.
-3. **Review Results**: Check the risk level, URL analysis, and content analysis.
-4. **Give Feedback**: Click "It's Safe" or "It's a Threat" to help the AI learn.
+### Web App
+1. Go to the website (local or live).
+2. Paste a URL or message text.
+3. Click **Analyze Risk**.
+4. If suspicious, you may be prompted to check the sender's email.
+
+### Extension
+1. **Popup**: Click the extension icon, paste text/URL, and click Analyze.
+2. **Context Menu**: Highlight text or right-click a link on any webpage, then select **"Analyze Risk with AI"**.
 
 ## Tech Stack
 
-- **Framework**: Next.js 14 (App Router)
-- **Language**: TypeScript
-- **Database**: MongoDB with Mongoose ODM
-- **Styling**: Tailwind CSS
-- **Icons**: Lucide React
-- **Notifications**: Sonner (Toast notifications)
-- **API Integration**: Axios
-- **External APIs**: VirusTotal, OpenRouter (LLM)
+- **Frontend**: Next.js, Tailwind CSS, Lucide Icons
+- **Backend**: Next.js API Routes
+- **AI/ML**: OpenRouter (Llama 3.2), VirusTotal API
+- **Database**: MongoDB, Mongoose
+- **Extension**: Manifest V3, JavaScript
 
 ## API Endpoints
 
@@ -139,3 +122,7 @@ Retrieves historical feedback (for internal use).
 ## Disclaimer
 
 This tool provides an automated risk assessment. Do not rely on this as a legal or financial guarantee. Always exercise caution when dealing with unknown links or messages.
+
+## License
+
+This project is open source.

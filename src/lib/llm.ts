@@ -14,7 +14,7 @@ const USE_GEMINI = !!GEMINI_API_KEY;
 
 export interface FraudAnalysisResult {
   fraud_probability: number;
-  category: 'phishing' | 'scam' | 'spam' | 'legitimate' | 'unknown';
+  category: 'phishing' | 'scam' | 'spam' | 'legitimate' | 'adult' | 'gambling' | 'unknown';
   signals_detected: string[];
   extracted_emails?: string[];
   email_risk_analysis?: {
@@ -114,19 +114,19 @@ export async function analyzeText(text: string, context?: string): Promise<Fraud
   console.log('✅ Email extraction complete, calling AI...');
 
   const prompt = `
-Analyze this text for phishing/fraud/scam:
+Analyze this text for cybersecurity risks, including phishing, fraud, scams, adult content, and gambling.
 
 TEXT: "${text.substring(0, 500)}"
 ${emailContext}
 
-Detect: urgency, fake authority, threats, credential requests, suspicious emails.
-Estimate fraud probability (0.0-1.0).
+Detect: urgency, fake authority, threats, credential requests, suspicious emails, adult content, gambling keywords.
+Estimate fraud/risk probability (0.0-1.0). Adult/Gambling content should have probability > 0.5.
 
 JSON OUTPUT ONLY:
 {
   "fraud_probability": 0.0,
-  "category": "phishing|scam|spam|legitimate|unknown",
-  "signals_detected": ["urgency", "fake authority", "etc"]
+  "category": "phishing|scam|spam|legitimate|adult|gambling|unknown",
+  "signals_detected": ["urgency", "fake authority", "adult content", "gambling", "etc"]
 }
 `;
 

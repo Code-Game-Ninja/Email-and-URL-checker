@@ -64,11 +64,12 @@ export async function POST(request: Request) {
     const malicious = vtStats?.malicious || 0;
     const suspicious = vtStats?.suspicious || 0;
     const fraudProb = textAnalysis.fraud_probability;
+    const category = textAnalysis.category;
 
     if (malicious > 0) {
       overall_risk = 'DANGEROUS';
       confidence = 'High';
-    } else if (suspicious > 0 || fraudProb >= 0.7) {
+    } else if (suspicious > 0 || fraudProb >= 0.7 || category === 'adult' || category === 'gambling') {
       overall_risk = 'CAUTION';
       confidence = 'Medium';
     } else {
@@ -86,10 +87,16 @@ export async function POST(request: Request) {
     } else if (overall_risk === 'CAUTION') {
       if (suspicious > 0) {
         summary = `Suspicious activity detected (${suspicious} flags).`;
+      } else if (category === 'adult') {
+        summary = `Adult content detected. Proceed with caution.`;
+        warning = '⚠️ CAUTION: This site contains adult content.';
+      } else if (category === 'gambling') {
+        summary = `Gambling content detected. Proceed with caution.`;
+        warning = '⚠️ CAUTION: This site contains gambling content.';
       } else {
         summary = `High probability of fraud detected in text (${(fraudProb * 100).toFixed(0)}%).`;
+        warning = '⚠️ CAUTION: This content shows signs of being a scam or phishing attempt.';
       }
-      warning = '⚠️ CAUTION: This content shows signs of being a scam or phishing attempt.';
     } else {
         if (vtStats) {
             summary = `Clean URL scan (${vtStats.harmless} harmless, ${vtStats.undetected} undetected).`;

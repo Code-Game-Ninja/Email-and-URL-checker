@@ -208,7 +208,7 @@ JSON OUTPUT ONLY:
           headers: {
             'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
             'Content-Type': 'application/json',
-            'HTTP-Referer': 'http://localhost:3000',
+            'HTTP-Referer': 'https://cybersecurity-risk-ai.vercel.app',
             'X-Title': 'Cybersecurity Risk AI',
           },
           timeout: 15000, // 15 second timeout

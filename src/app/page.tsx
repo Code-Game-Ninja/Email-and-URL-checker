@@ -46,6 +46,17 @@ export default function Home() {
   const [manualEmail, setManualEmail] = useState('');
   const [checkingEmail, setCheckingEmail] = useState(false);
 
+  // Check for query params (from extension context menu)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const analyzeParam = params.get('analyze');
+    if (analyzeParam) {
+      setInput(analyzeParam);
+      // Optional: Auto-submit
+      // handleSubmit({ preventDefault: () => {} } as any);
+    }
+  }, []);
+
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {

@@ -10,7 +10,9 @@ A comprehensive cybersecurity tool that helps users detect malicious URLs, analy
 - **🧠 AI Content Analysis**: Uses advanced LLMs to analyze text messages, emails, and chats for fraud signals (urgency, fake authority, etc.).
 - **🔞 Content Filtering**: Automatically flags adult and gambling content as "Caution".
 - **📧 Email Reputation Check**: Extracts emails from text and checks their reputation. Allows manual email lookup if none are found.
-- **🧩 Browser Extension**: Analyze any text or link directly from your browser with a right-click context menu or popup.
+- **🧩 Browser Extension**: 
+  - **Automatic Analysis**: Automatically checks every page you visit for threats and notifies you.
+  - **Popup & Context Menu**: Manual analysis tools for specific text or links.
 - **🔄 Feedback Loop**: Users can provide feedback ("Safe" vs "Threat") to help the system learn and improve.
 - **📊 Risk Scoring**: Clear "SAFE", "CAUTION", or "DANGEROUS" assessment.
 
@@ -77,8 +79,9 @@ See [VERCEL_DEPLOYMENT.md](./VERCEL_DEPLOYMENT.md) for detailed deployment instr
 4. If suspicious, you may be prompted to check the sender's email.
 
 ### Extension
-1. **Popup**: Click the extension icon, paste text/URL, and click Analyze.
-2. **Context Menu**: Highlight text or right-click a link on any webpage, then select **"Analyze Risk with AI"**.
+1. **Automatic**: The extension runs in the background and notifies you of the risk level for every page you visit.
+2. **Popup**: Click the extension icon, paste text/URL, and click Analyze.
+3. **Context Menu**: Highlight text or right-click a link on any webpage, then select **"Analyze Risk with AI"**.
 
 ## Tech Stack
 

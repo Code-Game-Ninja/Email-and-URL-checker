@@ -21,3 +21,51 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     chrome.tabs.create({ url });
   }
 });
+
+// Listen for messages from content script
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "analyze_page") {
+    analyzeContent(message.data);
+  }
+});
+
+async function analyzeContent(data) {
+  const apiUrl = 'https://email-and-url-checker.vercel.app/api/analyze';
+  
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        url: data.url,
+        pageContent: data.pageContent
+      })
+    });
+
+    if (!response.ok) throw new Error('Analysis failed');
+
+    const result = await response.json();
+    showNotification(result);
+  } catch (error) {
+    console.error('Analysis error:', error);
+  }
+}
+
+function showNotification(result) {
+  const risk = result.overall_risk;
+  let title = `Risk Analysis: ${risk}`;
+  let message = result.user_warning_message || result.url_analysis?.summary || "Analysis complete.";
+  
+  // Use the existing icon
+  let iconUrl = "icons/icon128.png"; 
+
+  chrome.notifications.create({
+    type: 'basic',
+    iconUrl: iconUrl,
+    title: title,
+    message: message,
+    priority: 1
+  });
+}

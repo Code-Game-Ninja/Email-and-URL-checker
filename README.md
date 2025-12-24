@@ -59,11 +59,22 @@ A comprehensive cybersecurity tool that helps users detect malicious URLs, analy
 
 ### Installation (Browser Extension)
 
-1. Open Chrome and go to `chrome://extensions/`.
+#### Chrome, Edge, Brave, Opera
+1. Open your browser and go to the extensions management page (e.g., `chrome://extensions/`).
 2. Enable **Developer mode** in the top right corner.
 3. Click **Load unpacked**.
 4. Select the `extension` folder located inside the project directory.
-5. The extension is now installed! You can pin it to your toolbar.
+
+#### Firefox
+1. Open Firefox and go to `about:debugging#/runtime/this-firefox`.
+2. Click **Load Temporary Add-on...**.
+3. Navigate to the `extension` folder and select the `manifest-firefox.json` file.
+   *(Note: Firefox requires the manifest file to be selected, not the folder)*.
+
+#### Safari
+Safari requires converting the Web Extension using Xcode.
+1. Run `xcrun safari-web-extension-converter /path/to/extension`.
+2. Build and run the app in Xcode.
 
 ## Deployment
 

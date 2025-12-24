@@ -25,6 +25,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 // Listen for messages from content script
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "analyze_page") {
+    console.log("Cybersecurity Risk AI: Received analysis request for", message.data.url);
     analyzeContent(message.data);
   }
 });
@@ -33,6 +34,7 @@ async function analyzeContent(data) {
   const apiUrl = 'https://email-and-url-checker.vercel.app/api/analyze';
   
   try {
+    console.log("Cybersecurity Risk AI: Fetching API...");
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
@@ -44,17 +46,22 @@ async function analyzeContent(data) {
       })
     });
 
-    if (!response.ok) throw new Error('Analysis failed');
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Analysis failed: ${response.status} ${errorText}`);
+    }
 
     const result = await response.json();
+    console.log("Cybersecurity Risk AI: Analysis result", result);
     showNotification(result);
   } catch (error) {
-    console.error('Analysis error:', error);
+    console.error('Cybersecurity Risk AI: Analysis error:', error);
+    // Optional: Notify user of error?
   }
 }
 
 function showNotification(result) {
-  const risk = result.overall_risk;
+  const risk = result.overall_risk || "UNKNOWN";
   let title = `Risk Analysis: ${risk}`;
   let message = result.user_warning_message || result.url_analysis?.summary || "Analysis complete.";
   
@@ -66,6 +73,18 @@ function showNotification(result) {
     iconUrl: iconUrl,
     title: title,
     message: message,
-    priority: 1
+    priority: 1,
+    requireInteraction: false
+  }, (notificationId) => {
+    // Auto-clear after 5 seconds
+    if (notificationId) {
+      setTimeout(() => {
+        chrome.notifications.clear(notificationId);
+      }, 5000);
+    }
   });
 }
+
+chrome.notifications.onClicked.addListener((notificationId) => {
+  chrome.tabs.create({ url: 'https://email-and-url-checker.vercel.app' });
+});

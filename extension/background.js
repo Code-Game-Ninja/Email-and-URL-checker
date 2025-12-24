@@ -1,9 +1,67 @@
+// Track analyzed URLs to avoid duplicate scans
+const analyzedUrls = new Set();
+const SCAN_DELAY = 2000; // Wait 2 seconds after page load
+
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: "analyze-risk",
     title: "Analyze Risk with AI",
     contexts: ["selection", "link"]
   });
+  
+  console.log("Cybersecurity Risk AI: Extension installed and ready for auto-scanning");
+});
+
+// Auto-scan when tabs are updated (page loaded)
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  // Only scan when page is fully loaded
+  if (changeInfo.status === 'complete' && tab.url) {
+    // Skip internal pages
+    if (tab.url.startsWith('chrome://') || tab.url.startsWith('edge://') || 
+        tab.url.startsWith('about:') || tab.url.startsWith('chrome-extension://')) {
+      return;
+    }
+    
+    console.log("Cybersecurity Risk AI: Page loaded, preparing auto-scan:", tab.url);
+    
+    // Inject and execute content script for auto-analysis
+    setTimeout(() => {
+      chrome.scripting.executeScript({
+        target: { tabId: tabId },
+        func: () => {
+          // Trigger content script analysis
+          window.postMessage({ type: 'TRIGGER_AUTO_SCAN' }, '*');
+        }
+      }).catch(err => {
+        console.log("Cybersecurity Risk AI: Could not inject script:", err.message);
+      });
+    }, SCAN_DELAY);
+  }
+});
+
+// Auto-scan when switching to a different tab
+chrome.tabs.onActivated.addListener(async (activeInfo) => {
+  const tab = await chrome.tabs.get(activeInfo.tabId);
+  
+  if (!tab.url || tab.url.startsWith('chrome://') || tab.url.startsWith('edge://') || 
+      tab.url.startsWith('about:') || tab.url.startsWith('chrome-extension://')) {
+    return;
+  }
+  
+  // If we haven't analyzed this URL recently, trigger analysis
+  if (!analyzedUrls.has(tab.url)) {
+    console.log("Cybersecurity Risk AI: Tab activated, checking:", tab.url);
+    setTimeout(() => {
+      chrome.scripting.executeScript({
+        target: { tabId: activeInfo.tabId },
+        func: () => {
+          window.postMessage({ type: 'TRIGGER_AUTO_SCAN' }, '*');
+        }
+      }).catch(err => {
+        console.log("Cybersecurity Risk AI: Could not inject script:", err.message);
+      });
+    }, 500);
+  }
 });
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
@@ -33,8 +91,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 async function analyzeContent(data) {
   const apiUrl = 'https://email-and-url-checker.vercel.app/api/analyze';
   
+  // Skip if already analyzed recently
+  if (analyzedUrls.has(data.url)) {
+    console.log("Cybersecurity Risk AI: URL already analyzed, skipping:", data.url);
+    return;
+  }
+  
   try {
-    console.log("Cybersecurity Risk AI: Fetching API...");
+    console.log("Cybersecurity Risk AI: Auto-analyzing page:", data.url);
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
@@ -52,18 +116,39 @@ async function analyzeContent(data) {
     }
 
     const result = await response.json();
-    console.log("Cybersecurity Risk AI: Analysis result", result);
-    showNotification(result);
+    console.log("Cybersecurity Risk AI: Analysis complete", result);
+    
+    // Track this URL
+    analyzedUrls.add(data.url);
+    
+    // Clear from cache after 5 minutes to allow re-analysis if user revisits
+    setTimeout(() => {
+      analyzedUrls.delete(data.url);
+    }, 5 * 60 * 1000);
+    
+    // Only show notification for CAUTION or DANGEROUS
+    if (result.overall_risk === 'CAUTION' || result.overall_risk === 'DANGEROUS') {
+      showNotification(result, data.url);
+    } else {
+      console.log("Cybersecurity Risk AI: Page is SAFE, no notification needed");
+    }
   } catch (error) {
     console.error('Cybersecurity Risk AI: Analysis error:', error);
-    // Optional: Notify user of error?
   }
 }
 
-function showNotification(result) {
+function showNotification(result, url) {
   const risk = result.overall_risk || "UNKNOWN";
-  let title = `Risk Analysis: ${risk}`;
+  let title = `⚠️ Security Alert: ${risk}`;
   let message = result.user_warning_message || result.url_analysis?.summary || "Analysis complete.";
+  
+  // Add URL domain to message
+  try {
+    const domain = new URL(url).hostname;
+    message = `${domain}\n${message}`;
+  } catch (e) {
+    // Ignore URL parsing errors
+  }
   
   // Use the existing icon
   let iconUrl = "icons/icon128.png"; 
@@ -73,14 +158,14 @@ function showNotification(result) {
     iconUrl: iconUrl,
     title: title,
     message: message,
-    priority: 1,
-    requireInteraction: false
+    priority: 2,
+    requireInteraction: risk === 'DANGEROUS' // Keep dangerous warnings visible
   }, (notificationId) => {
-    // Auto-clear after 5 seconds
-    if (notificationId) {
+    // Auto-clear CAUTION after 8 seconds, keep DANGEROUS until clicked
+    if (notificationId && risk !== 'DANGEROUS') {
       setTimeout(() => {
         chrome.notifications.clear(notificationId);
-      }, 5000);
+      }, 8000);
     }
   });
 }

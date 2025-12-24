@@ -126,12 +126,17 @@ async function analyzeContent(data) {
       analyzedUrls.delete(data.url);
     }, 5 * 60 * 1000);
     
-    // Only show notification for CAUTION or DANGEROUS
-    if (result.overall_risk === 'CAUTION' || result.overall_risk === 'DANGEROUS') {
-      showNotification(result, data.url);
-    } else {
-      console.log("Cybersecurity Risk AI: Page is SAFE, no notification needed");
-    }
+    // Send results back to content script for in-page popup
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs[0]) {
+        chrome.tabs.sendMessage(tabs[0].id, {
+          action: 'show_result',
+          result: result
+        }).catch(err => {
+          console.log("Could not send to content script:", err);
+        });
+      }
+    });
   } catch (error) {
     console.error('Cybersecurity Risk AI: Analysis error:', error);
   }

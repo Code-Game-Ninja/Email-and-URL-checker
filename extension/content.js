@@ -36,7 +36,7 @@ function createPopup() {
       right: 20px;
       z-index: 2147483647;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      animation: slideInRight 0.3s ease-out;
     }
     
     @keyframes slideInRight {
@@ -66,75 +66,78 @@ function createPopup() {
     }
     
     .cyber-popup-content {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border-radius: 16px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
-      min-width: 320px;
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      min-width: 340px;
       max-width: 400px;
       overflow: hidden;
-      backdrop-filter: blur(10px);
     }
     
     .cyber-popup-content.safe {
-      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+      border-left: 4px solid #10b981;
     }
     
     .cyber-popup-content.caution {
-      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      border-left: 4px solid #f59e0b;
     }
     
     .cyber-popup-content.dangerous {
-      background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+      border-left: 4px solid #ef4444;
     }
     
     .cyber-popup-header {
       display: flex;
       align-items: center;
-      padding: 16px 20px;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
+      padding: 14px 16px;
+      border-bottom: 1px solid #2a2a2a;
     }
     
     .cyber-icon {
-      width: 28px;
-      height: 28px;
-      background: white;
-      border-radius: 50%;
-      margin-right: 12px;
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
-      animation: pulse 2s infinite;
+      font-size: 16px;
     }
     
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.1); opacity: 0.8; }
+    .cyber-popup-content.safe .cyber-icon::before {
+      content: '✓';
+      color: #10b981;
+      font-weight: bold;
     }
     
-    .cyber-icon::before {
-      content: '🛡️';
+    .cyber-popup-content.caution .cyber-icon::before {
+      content: '⚠';
+      color: #f59e0b;
+    }
+    
+    .cyber-popup-content.dangerous .cyber-icon::before {
+      content: '✕';
+      color: #ef4444;
+      font-weight: bold;
     }
     
     .cyber-title {
-      color: white;
-      font-size: 16px;
-      font-weight: 600;
+      color: #e5e5e5;
+      font-size: 14px;
+      font-weight: 500;
       margin: 0;
       flex: 1;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
     
     .cyber-close {
-      background: rgba(255, 255, 255, 0.2);
+      background: transparent;
       border: none;
-      color: white;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
+      color: #9ca3af;
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
       cursor: pointer;
-      font-size: 24px;
+      font-size: 20px;
       line-height: 1;
       transition: all 0.2s;
       display: flex;
@@ -143,60 +146,79 @@ function createPopup() {
     }
     
     .cyber-close:hover {
-      background: rgba(255, 255, 255, 0.3);
-      transform: rotate(90deg);
+      background: #2a2a2a;
+      color: #e5e5e5;
     }
     
     .cyber-popup-body {
-      padding: 20px;
-      color: white;
+      padding: 16px;
+      color: #d1d5db;
     }
     
     .cyber-risk-badge {
       display: inline-block;
-      padding: 6px 16px;
-      border-radius: 20px;
-      background: rgba(255, 255, 255, 0.25);
-      backdrop-filter: blur(10px);
-      font-weight: 600;
-      font-size: 13px;
-      margin-bottom: 12px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 11px;
+      margin-bottom: 10px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    .cyber-popup-content.safe .cyber-risk-badge {
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    
+    .cyber-popup-content.caution .cyber-risk-badge {
+      background: rgba(245, 158, 11, 0.15);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    
+    .cyber-popup-content.dangerous .cyber-risk-badge {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
     }
     
     .cyber-message {
-      font-size: 14px;
-      line-height: 1.6;
-      margin: 0 0 12px 0;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      font-size: 13px;
+      line-height: 1.5;
+      margin: 0 0 10px 0;
+      color: #e5e5e5;
     }
     
     .cyber-details {
       font-size: 12px;
-      opacity: 0.9;
-      background: rgba(0, 0, 0, 0.15);
+      color: #9ca3af;
+      background: #0f0f0f;
       padding: 10px 12px;
-      border-radius: 8px;
+      border-radius: 6px;
       margin-top: 10px;
+      border: 1px solid #2a2a2a;
     }
     
     .cyber-details-item {
-      margin: 4px 0;
+      margin: 6px 0;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
+      line-height: 1.4;
     }
     
     .cyber-details-item::before {
-      content: '•';
+      content: '›';
       margin-right: 8px;
+      color: #6b7280;
       font-weight: bold;
+      flex-shrink: 0;
     }
     
     .cyber-progress-bar {
-      height: 3px;
-      background: rgba(255, 255, 255, 0.3);
+      height: 2px;
+      background: #2a2a2a;
       position: relative;
       overflow: hidden;
     }
@@ -208,8 +230,19 @@ function createPopup() {
       left: 0;
       height: 100%;
       width: 100%;
-      background: white;
       animation: progress 5s linear forwards;
+    }
+    
+    .cyber-popup-content.safe .cyber-progress-bar::after {
+      background: #10b981;
+    }
+    
+    .cyber-popup-content.caution .cyber-progress-bar::after {
+      background: #f59e0b;
+    }
+    
+    .cyber-popup-content.dangerous .cyber-progress-bar::after {
+      background: #ef4444;
     }
     
     @keyframes progress {
